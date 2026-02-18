@@ -28,3 +28,7 @@ Card* CardLibrary::createCard (const std::string& cardName) {
         return cardLibrary[cardName]->clone();
     }
 }
+
+void CardLibrary::clearCardLibrary () {
+    for (auto x : cardLibrary) delete x.second;
+}

@@ -27,6 +27,7 @@ private:
 public:
     static void registerCard (const std::string& cardName, Card* cardClassPointer);
     static Card* createCard (const std::string& cardName);
+    static void clearCardLibrary ();
 };
 
 #endif
