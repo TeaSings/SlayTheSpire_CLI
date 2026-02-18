@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "Card_Basic.h"
+#include "ConcreteCards.h"
 #include <vector>
 #include <string>
 
@@ -23,6 +23,7 @@ public:
             if (handCards[i]->getCost() <= _mana) {
                 handCards[i]->play();
                 _mana -= handCards[i]->getCost();
+                delete handCards[i];
                 handCards.erase(handCards.begin() + i);
             } else {
                 std::cout << "当前能量不足" << std::endl;
