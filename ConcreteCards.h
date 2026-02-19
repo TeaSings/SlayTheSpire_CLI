@@ -17,8 +17,8 @@ public:
         std::cout << "对 " << monster.getName() << " 造成 6 点伤害"<< std::endl;
     }
 
-    virtual Card* clone () const override {
-        return new StrikeCard(*this);
+    virtual std::unique_ptr<Card> clone () const override {
+        return std::make_unique<StrikeCard>(*this);
     }
 };
 
@@ -33,8 +33,8 @@ public:
         player.getShield(5);
     }
 
-    virtual Card* clone () const override {
-        return new DefendCard(*this);
+    virtual std::unique_ptr<Card> clone () const override {
+        return std::make_unique<DefendCard>(*this);
     }
 };
 
@@ -48,8 +48,8 @@ public:
         std::cout << "造成 8 点伤害，并给予 1 层易伤" << std::endl;
     }
 
-    virtual Card* clone () const override {
-        return new BashCard(*this);
+    virtual std::unique_ptr<Card> clone () const override {
+        return std::make_unique<BashCard>(*this);
     }
 };
 

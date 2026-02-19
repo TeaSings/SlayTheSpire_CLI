@@ -5,12 +5,10 @@ Player::Player (const int hp, const int mana, const int shield)
     : _hp(hp), _mana(mana), _shield(shield)
     {}
 
-Player::~Player () {
-    for (auto x : handCards) delete x;
-}
+Player::~Player () {}
 
-void Player::drawCard (Card*& card) {
-    handCards.push_back(card);
+void Player::drawCard (std::unique_ptr<Card> card) {
+    handCards.push_back(std::move(card));
 }
 
 void Player::playAllCards (Monster& monster) {
@@ -18,7 +16,6 @@ void Player::playAllCards (Monster& monster) {
         if (handCards[i]->getCost() <= _mana) {
             handCards[i]->play(*this, monster);
             _mana -= handCards[i]->getCost();
-            delete handCards[i];
             handCards.erase(handCards.begin() + i);
         } else {
             std::cout << "当前能量不足" << std::endl;
