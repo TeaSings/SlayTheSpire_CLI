@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Monster.h"
 
 Player::Player (const int mana)
     : _mana(mana)
@@ -12,10 +13,10 @@ void Player::drawCard (Card*& card) {
     handCards.push_back(card);
 }
 
-void Player::playAllCards () {
+void Player::playAllCards (Monster& monster) {
     for (size_t i = 0; i < handCards.size(); ) {
         if (handCards[i]->getCost() <= _mana) {
-            handCards[i]->play();
+            handCards[i]->play(*this, monster);
             _mana -= handCards[i]->getCost();
             delete handCards[i];
             handCards.erase(handCards.begin() + i);

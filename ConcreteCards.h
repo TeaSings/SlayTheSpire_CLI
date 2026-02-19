@@ -2,6 +2,7 @@
 #define CARD_BASIC_H
 
 #include "Card.h"
+#include "Monster.h"
 
 class StrikeCard :public Card {
 public:
@@ -9,8 +10,10 @@ public:
     : Card(name, cost)
     {}
 
-    virtual void play () override {
-        std::cout << "造成 6 点伤害" << std::endl;
+    virtual void play (Player& player, Monster& monster) override {
+        monster.takeDamage(6);
+        std::cout << ">> 使用了打击" << std::endl;
+        std::cout << "对 " << monster.getName() << " 造成 6 点伤害"<< std::endl;
     }
 
     virtual Card* clone () const override {
@@ -24,7 +27,7 @@ public:
     : Card(name, cost)
     {}
 
-    virtual void play () override {
+    virtual void play (Player& player, Monster& monster) override {
         std::cout << "获得 5 点格挡" << std::endl;
     }
 
@@ -39,7 +42,7 @@ public:
     : Card(name, cost)
     {}
 
-    virtual void play() override {
+    virtual void play(Player& player, Monster& monster) override {
         std::cout << "造成 8 点伤害，并给予 1 层易伤" << std::endl;
     }
 

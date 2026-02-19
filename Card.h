@@ -4,6 +4,9 @@
 #include <iostream>
 #include <map>
 
+class Monster;
+class Player;
+
 class Card {
 private:
     std::string _name;
@@ -17,7 +20,7 @@ public:
     virtual ~Card();
 
     inline int getCost() const { return _cost; }
-    virtual void play () = 0;
+    virtual void play (Player& player, Monster& monster) = 0;
     virtual Card* clone () const = 0;
 };
 

@@ -47,15 +47,11 @@ int main() {
     // 阶段 3：执行出牌逻辑
     // ==========================================
     std::cout << "--- 玩家开始出牌 ---" << std::endl;
-    // 应该会出前三张牌 (1+1+2 = 4，但只有3点能量，所以第三张“痛击”出不来，会跳过)
-    ironclad.playAllCards(); 
-    
-    // 如果你修改了 Player.h (加上了 delete)，打出的牌内存会被回收。
-    // 但是，因为能量不够没打出的牌（比如痛击和第二张打击）仍然在手牌里，需要有机制回收。
+    Monster jawWorm("大颚虫", 40); // 创造一个有40点血的怪物
+    ironclad.playAllCards(jawWorm); // 把大颚虫传进去挨打
 
     std::cout << "--- 游戏结束，进行内存清理 ---" << std::endl;
-    // 注意：在完整项目中，CardLibrary 内部的原型卡牌（最早 new 出来的那个模板）
-    // 也需要一个静态的 clearLibrary() 方法来遍历 map 进行 delete 释放，这里作为进阶思考留给你。
+    CardLibrary::clearCardLibrary();
 
     return 0;
 }

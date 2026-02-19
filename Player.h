@@ -1,9 +1,11 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "ConcreteCards.h"
+#include "Card.h"
 #include <vector>
 #include <string>
+
+class Monster;
 
 class Player {
 private:
@@ -15,7 +17,7 @@ public:
 
     void drawCard (Card*& card);
 
-    void playAllCards ();
+    void playAllCards (Monster& monster);
 };
 
 #endif
