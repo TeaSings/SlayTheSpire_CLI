@@ -10,14 +10,16 @@ class Monster;
 class Player {
 private:
     std::vector<Card*> handCards;
-    int _mana;
+    int _hp, _mana, _shield;
 public:
-    Player (const int mana = 0);
+    Player (const int hp = 0, const int mana = 0, const int shield = 0);
     ~Player ();
 
     void drawCard (Card*& card);
-
     void playAllCards (Monster& monster);
+    void takeDamage (const int dmg);
+    void getShield (const int shield);
+    void resetShield ();
 };
 
 #endif

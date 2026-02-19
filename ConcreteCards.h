@@ -3,6 +3,7 @@
 
 #include "Card.h"
 #include "Monster.h"
+#include "Player.h"
 
 class StrikeCard :public Card {
 public:
@@ -11,8 +12,8 @@ public:
     {}
 
     virtual void play (Player& player, Monster& monster) override {
-        monster.takeDamage(6);
         std::cout << ">> 使用了打击" << std::endl;
+        monster.takeDamage(6);
         std::cout << "对 " << monster.getName() << " 造成 6 点伤害"<< std::endl;
     }
 
@@ -28,7 +29,8 @@ public:
     {}
 
     virtual void play (Player& player, Monster& monster) override {
-        std::cout << "获得 5 点格挡" << std::endl;
+        std::cout << ">> 使用了防御" << std::endl;
+        player.getShield(5);
     }
 
     virtual Card* clone () const override {

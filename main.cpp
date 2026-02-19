@@ -1,5 +1,4 @@
 #include "ConcreteCards.h"
-#include "Player.h"
 #include <iostream>
 
 int main() {
@@ -16,7 +15,7 @@ int main() {
     // ==========================================
     // 阶段 2：创建玩家与卡牌发放
     // ==========================================
-    Player ironclad(3); // 创建拥有 3 点初始能量的战士角色
+    Player ironclad(70,3); // 创建拥有 3 点初始能量的战士角色
 
     // 重点：此时不再手动 new 具体类，而是让图鉴通过 clone() 帮我们生成！
     // 这样游戏的主逻辑完全不知道 StrikeCard、DefendCard 的存在，实现了极度解耦。
