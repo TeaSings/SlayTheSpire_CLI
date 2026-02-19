@@ -2,18 +2,7 @@
 #include "Player.h"
 #include <iostream>
 
-// 一个辅助函数，用于清理未打出的手牌，防止内存泄漏
-void cleanupHand(Player& player) {
-    // 实际项目中 Player 应该有自己的析构函数 ~Player() 来处理这个
-    // 这里简单演示，如果你没有在 Player 内部处理，就需要在外部手动清理
-}
-
 int main() {
-    // ==========================================
-    // 阶段 1：游戏初始化，注册卡牌原型到图鉴中
-    // ==========================================
-    // 注意：如果你还没有将 CardLibrary 方法的参数改为 const std::string&，
-    // 这里必须借助临时变量，否则会编译报错。建议尽快修改为 const！
     system("chcp 65001");
     std::string strikeName = "打击";
     std::string defendName = "防御";
