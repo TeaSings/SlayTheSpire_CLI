@@ -1,41 +1,51 @@
 #include "ConcreteCards.h"
-#include <iostream>
+#include "Player.h"
+#include "Monster.h"
 
 int main() {
     system("chcp 65001");
-    std::string strikeName = "打击";
-    std::string defendName = "防御";
-    std::string bashName = "痛击";
+    
+    // 1. 注册卡牌原型（只注册一次，后续都通过图鉴 clone）
+    CardLibrary::registerCard("打击", std::make_unique<StrikeCard>(StrikeCard("打击", 1)));
+    CardLibrary::registerCard("防御", std::make_unique<DefendCard>(DefendCard("防御", 1)));
+    CardLibrary::registerCard("痛击", std::make_unique<BashCard>(BashCard("痛击", 2)));
 
-    // 将具体的卡牌对象作为“原型”注册进图鉴
-    CardLibrary::registerCard(strikeName, std::make_unique<StrikeCard>(StrikeCard("打击", 1)));
-    CardLibrary::registerCard(defendName, std::make_unique<DefendCard>(DefendCard("防御", 1)));
-    CardLibrary::registerCard(bashName, std::make_unique<BashCard>(BashCard("痛击", 2)));
+    // 2. 创建玩家和怪物
+    Player ironclad(70, 3, 0); 
+    Monster jawWorm("大颚虫", 40);
 
-    // ==========================================
-    // 阶段 2：创建玩家与卡牌发放
-    // ==========================================
-    Player ironclad(70,3); // 创建拥有 3 点初始能量的战士角色
+    // 3. 初始化卡组 (会自动生成 5打击 4防御 1痛击 并进行首次洗牌)
+    std::cout << "========== 游戏初始化 ==========" << std::endl;
+    ironclad.initDeck();
 
-    // 重点：此时不再手动 new 具体类，而是让图鉴通过 clone() 帮我们生成！
-    // 这样游戏的主逻辑完全不知道 StrikeCard、DefendCard 的存在，实现了极度解耦。
-    std::unique_ptr<Card> c1 = CardLibrary::createCard(strikeName);
-    std::unique_ptr<Card> c2 = CardLibrary::createCard(defendName);
-    std::unique_ptr<Card> c3 = CardLibrary::createCard(bashName);
-    std::unique_ptr<Card> c4 = CardLibrary::createCard(strikeName); // 再抽一张打击
+    // 4. 模拟游戏主循环 (我们测试模拟 3 个回合)
+    std::cout << "\n========== 战斗开始 ==========" << std::endl;
 
-    if (c1 && c2 && c3 && c4) {
-        ironclad.drawCard(std::move(c1));
-        ironclad.drawCard(std::move(c2));
-        ironclad.drawCard(std::move(c3));
-        ironclad.drawCard(std::move(c4));
+    for (int turn = 1; turn <= 3; ++turn) {
+        std::cout << "\n>>> --- 第 " << turn << " 回合开始 --- <<<" << std::endl;
+        
+        // 阶段一：回合开始，玩家抽 5 张牌
+        ironclad.drawCard(5);
+        
+        // 阶段二：玩家自动出牌
+        std::cout << "\n[玩家行动阶段]" << std::endl;
+        ironclad.playAllCards(jawWorm);
+        
+        // 阶段三：怪物行动
+        if (jawWorm.isAlive()) {
+            std::cout << "\n[怪物行动阶段]" << std::endl;
+            std::cout << "大颚虫发起了攻击，造成 6 点伤害！" << std::endl;
+            ironclad.takeDamage(6);
+        } else {
+            std::cout << "\n怪物已死亡，战斗胜利！" << std::endl;
+            break;
+        }
+
+        // 阶段四：玩家回合结束，未打出的牌进入弃牌堆，清空护盾
+        ironclad.endTurn();
     }
 
-    // ==========================================
-    // 阶段 3：执行出牌逻辑
-    // ==========================================
-    std::cout << "--- 玩家开始出牌 ---" << std::endl;
-    Monster jawWorm("大颚虫", 40); // 创造一个有40点血的怪物
-    ironclad.playAllCards(jawWorm); // 把大颚虫传进去挨打
+    std::cout << "\n========== 战斗结束 ==========" << std::endl;
+    
     return 0;
 }

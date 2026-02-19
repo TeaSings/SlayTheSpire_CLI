@@ -1,5 +1,8 @@
 #include "Player.h"
 #include "Monster.h"
+#include <algorithm>
+#include <random>
+#include <chrono>
 
 Player::Player (const int hp, const int mana, const int shield)
     : _hp(hp), _mana(mana), _shield(shield)
@@ -7,16 +10,59 @@ Player::Player (const int hp, const int mana, const int shield)
 
 Player::~Player () {}
 
-void Player::drawCard (std::unique_ptr<Card> card) {
-    handCards.push_back(std::move(card));
+void Player::initDeck () {
+    for (int i = 0; i < 5; i++) _drawPile.push_back(CardLibrary::createCard("打击"));
+    for (int i = 0; i < 4; i++) _drawPile.push_back(CardLibrary::createCard("防御"));
+    _drawPile.push_back(CardLibrary::createCard("痛击"));
+
+    shuffle();
+}
+
+void Player::shuffle () {
+    for (auto& card : _discardPile) {
+        _drawPile.push_back(std::move(card));
+    }
+    _discardPile.clear();
+
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::shuffle(_drawPile.begin(), _drawPile.end(), std::default_random_engine(seed));
+    
+    std::cout << "洗牌完成！当前抽牌堆有 " << _drawPile.size() << " 张牌。" << std::endl;
+}
+
+void Player::drawCard (int count) {
+    for (int i = 0; i < count; i++) {
+        if (_drawPile.empty()) {
+            if (_discardPile.empty()) {
+                std::cout << "抽牌堆和弃牌堆都没牌了！" << std::endl;
+                break;
+            }
+            shuffle();
+        }
+        
+        _handCards.push_back(std::move(_drawPile.back()));
+        _drawPile.pop_back();
+    }
+}
+
+void Player::endTurn () {
+    for (auto& card : _handCards) {
+        _discardPile.push_back(std::move(card));
+    }
+    _handCards.clear();
+
+    resetShield();
+    _mana = 3;
+    std::cout << "--- 玩家回合结束 ---" << std::endl;
 }
 
 void Player::playAllCards (Monster& monster) {
-    for (size_t i = 0; i < handCards.size(); ) {
-        if (handCards[i]->getCost() <= _mana) {
-            handCards[i]->play(*this, monster);
-            _mana -= handCards[i]->getCost();
-            handCards.erase(handCards.begin() + i);
+    for (size_t i = 0; i < _handCards.size(); ) {
+        if (_handCards[i]->getCost() <= _mana) {
+            _handCards[i]->play(*this, monster);
+            _mana -= _handCards[i]->getCost();
+            _discardPile.push_back(std::move(_handCards[i]));
+            _handCards.erase(_handCards.begin() + i);
         } else {
             std::cout << "当前能量不足" << std::endl;
             i++;

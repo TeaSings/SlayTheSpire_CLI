@@ -45,7 +45,9 @@ public:
     {}
 
     virtual void play(Player& player, Monster& monster) override {
-        std::cout << "造成 8 点伤害，并给予 1 层易伤" << std::endl;
+        std::cout << ">>使用了痛击" << std::endl;
+        monster.takeDamage(8);
+        std::cout << "对 " << monster.getName() << " 造成 8 点伤害"<< std::endl;
     }
 
     virtual std::unique_ptr<Card> clone () const override {
