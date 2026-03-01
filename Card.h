@@ -23,6 +23,8 @@ public:
     inline int getCost() const { return _cost; }
     virtual void play (Player& player, Monster& monster) = 0;
     virtual std::unique_ptr<Card> clone () const = 0;
+    virtual void print (std::ostream& os) const = 0; //利用操作符重载优化状态输出
+    friend std::ostream& operator << (std::ostream& os, const Card& card);
 };
 
 class CardLibrary {

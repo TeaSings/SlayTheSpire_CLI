@@ -13,7 +13,7 @@ int main() {
     // 2. 创建玩家和怪物
     Player ironclad(70, 3, 0); 
     Monster jawWorm("大颚虫", 40);
-
+    std::cout << ironclad << "\n" <<jawWorm << std::endl;
     // 3. 初始化卡组 (会自动生成 5打击 4防御 1痛击 并进行首次洗牌)
     std::cout << "========== 游戏初始化 ==========" << std::endl;
     ironclad.initDeck();
@@ -26,11 +26,11 @@ int main() {
         
         // 阶段一：回合开始，玩家抽 5 张牌
         ironclad.drawCard(5);
-        
+        std::cout << ironclad << std::endl;
         // 阶段二：玩家自动出牌
         std::cout << "\n[玩家行动阶段]" << std::endl;
         ironclad.playAllCards(jawWorm);
-        
+        std::cout << jawWorm << std::endl;
         // 阶段三：怪物行动
         if (jawWorm.isAlive()) {
             std::cout << "\n[怪物行动阶段]" << std::endl;
@@ -40,7 +40,7 @@ int main() {
             std::cout << "\n怪物已死亡，战斗胜利！" << std::endl;
             break;
         }
-
+        std::cout << ironclad << std::endl;
         // 阶段四：玩家回合结束，未打出的牌进入弃牌堆，清空护盾
         ironclad.endTurn();
     }

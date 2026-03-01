@@ -15,8 +15,8 @@ public:
 
     void takeDamage (const int dmg);
     bool isAlive () const;
-    void printStatus () const;
     std::string getName () const;
+    friend std::ostream& operator << (std::ostream& os, Monster& monster);
 };
 
 #endif

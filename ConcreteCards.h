@@ -12,14 +12,19 @@ public:
     {}
 
     virtual void play (Player& player, Monster& monster) override {
-        std::cout << ">> 使用了打击" << std::endl;
         monster.takeDamage(6);
-        std::cout << "对 " << monster.getName() << " 造成 6 点伤害"<< std::endl;
     }
 
     virtual std::unique_ptr<Card> clone () const override {
         return std::make_unique<StrikeCard>(*this);
     }
+
+    virtual void print (std::ostream& os) const override {
+        os << ">> 打击" << std::endl;
+        os << "消耗 1 点能量" << std::endl;
+        os << "造成 6 点伤害" << std::endl;
+    }
+
 };
 
 class DefendCard :public Card {
@@ -29,12 +34,16 @@ public:
     {}
 
     virtual void play (Player& player, Monster& monster) override {
-        std::cout << ">> 使用了防御" << std::endl;
         player.getShield(5);
     }
 
     virtual std::unique_ptr<Card> clone () const override {
         return std::make_unique<DefendCard>(*this);
+    }
+
+    virtual void print (std::ostream& os) const override {
+        os << ">> 防御" << std::endl;
+        os << "获得 5 点格挡" << std::endl;
     }
 };
 
@@ -45,13 +54,17 @@ public:
     {}
 
     virtual void play(Player& player, Monster& monster) override {
-        std::cout << ">>使用了痛击" << std::endl;
         monster.takeDamage(8);
-        std::cout << "对 " << monster.getName() << " 造成 8 点伤害"<< std::endl;
     }
 
     virtual std::unique_ptr<Card> clone () const override {
         return std::make_unique<BashCard>(*this);
+    }
+
+    virtual void print (std::ostream& os) const override {
+        os << ">> 痛击" << std::endl;
+        os << "造成 8 点伤害" << std::endl;
+        os << "使目标获得 2 点易伤" << std::endl;
     }
 };
 

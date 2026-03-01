@@ -104,3 +104,23 @@ void Player::resetShield () {
     _shield = 0;
     std::cout << "回合结束,角色防御清空" << std::endl;
 }
+
+std::ostream& operator << (std::ostream& os, const Player& player) {
+    os << ">> Player: " << std::endl;
+    os << "生命值: " << player._hp << std::endl;
+    os << "能量值: " << player._mana << std::endl;
+    os << "当前手牌: " << std::endl;
+    if (player._handCards.empty()) {
+        os << "(空)" << std::endl;
+    } else {
+        os << "  手牌总数: " << player._handCards.size() << std::endl;
+        for (size_t i = 0; i < player._handCards.size(); i++) {
+            os << "  " << (i + 1) << ". ";
+            os << *player._handCards[i];
+            if (i != player._handCards.size()) {
+                os << std::endl;
+            }
+        }
+    }
+    return os;
+}

@@ -9,7 +9,7 @@ class Monster;
 
 class Player {
 private:
-    std::vector<std::unique_ptr<Card>> _drawPile;
+    std::vector<std::unique_ptr<Card>> _drawPile; //三个vector分别用来表示: 弃牌堆 手牌 抽牌堆
     std::vector<std::unique_ptr<Card>> _handCards;
     std::vector<std::unique_ptr<Card>> _discardPile;
     int _hp, _mana, _shield;
@@ -25,6 +25,7 @@ public:
     void resetShield ();
     void endTurn ();
     void shuffle ();
+    friend std::ostream& operator << (std::ostream& os, const Player& player);
 };
 
 #endif

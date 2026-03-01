@@ -28,3 +28,8 @@ std::unique_ptr<Card> CardLibrary::createCard (const std::string& cardName) {
         return cardLibrary[cardName]->clone();
     }
 }
+
+std::ostream& operator << (std::ostream& os, const Card& card) {
+    card.print(os);
+    return os;
+}

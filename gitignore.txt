@@ -4,3 +4,5 @@
 *.o
 # 忽略 Mac 特有的系统级隐藏文件
 .DS_Store
+# 忽略VS Code配置目录
+.vscode/

@@ -18,10 +18,12 @@ bool Monster::isAlive () const {
     return _hp > 0;
 }
 
-void Monster::printStatus () const {
-    std::cout <<  _name << "HP " << _hp << " / " << _maxHp << std::endl;
-}
-
 std::string Monster::getName () const {
     return _name;
+}
+
+std::ostream& operator << (std::ostream& os, Monster& monster) {
+    os << ">> " << monster._name << std::endl;
+    os << "生命值：" << monster._hp << " / " << monster._maxHp << std::endl;
+    return os;
 }
