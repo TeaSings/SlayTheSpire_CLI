@@ -1,5 +1,5 @@
-#ifndef CARD_BASIC_H
-#define CARD_BASIC_H
+#ifndef CONCRETECARDS_H
+#define CONCRETECARDS_H
 
 #include "Card.h"
 #include "Monster.h"

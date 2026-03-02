@@ -1,6 +1,6 @@
 #include "ConcreteCards.h"
 #include "Player.h"
-#include "Monster.h"
+#include "ConcreteMonsters.h"
 
 int main() {
     system("chcp 65001");
@@ -9,10 +9,13 @@ int main() {
     CardLibrary::registerCard("打击", std::make_unique<StrikeCard>(StrikeCard("打击", 1)));
     CardLibrary::registerCard("防御", std::make_unique<DefendCard>(DefendCard("防御", 1)));
     CardLibrary::registerCard("痛击", std::make_unique<BashCard>(BashCard("痛击", 2)));
-
+    
+    MonsterLibrary::registerMonster("大颚虫", std::make_unique<JawWorm>(JawWorm("大颚虫", 40)));
     // 2. 创建玩家和怪物
     Player ironclad(70, 3, 0); 
-    Monster jawWorm("大颚虫", 40);
+    std::unique_ptr<Monster> jawWormPtr = MonsterLibrary::createMonster("大颚虫");
+    Monster& jawWorm = *jawWormPtr;
+
     std::cout << ironclad << "\n" <<jawWorm << std::endl;
     // 3. 初始化卡组 (会自动生成 5打击 4防御 1痛击 并进行首次洗牌)
     std::cout << "========== 游戏初始化 ==========" << std::endl;
@@ -34,8 +37,7 @@ int main() {
         // 阶段三：怪物行动
         if (jawWorm.isAlive()) {
             std::cout << "\n[怪物行动阶段]" << std::endl;
-            std::cout << "大颚虫发起了攻击，造成 6 点伤害！" << std::endl;
-            ironclad.takeDamage(6);
+            jawWorm.takeAction(ironclad);
         } else {
             std::cout << "\n怪物已死亡，战斗胜利！" << std::endl;
             break;
