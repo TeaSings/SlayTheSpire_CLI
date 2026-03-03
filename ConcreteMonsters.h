@@ -17,6 +17,7 @@ public:
     virtual void takeAction (Player& player) override {
         std::cout << ">> " << _name << " 发起了撕咬！" << std::endl;
         player.takeDamage(11);
+        reduceStatusEffectDuration();
     }
 };
 

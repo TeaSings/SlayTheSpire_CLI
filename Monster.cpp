@@ -1,14 +1,24 @@
 #include "Monster.h"
+#include "StatusEffect.h"
 
 std::map<std::string, std::unique_ptr<Monster>> MonsterLibrary::monsterLibrary;
+
+Monster::Monster (const Monster& other)
+    : _name(other._name), _hp(other._hp), _maxHp(other._maxHp)
+    {}
 
 Monster::Monster (const std::string& name, const int hp)
     : _name(name), _hp(hp), _maxHp(hp)
     {}
 
 void Monster::takeDamage (const int dmg) {
-    _hp -= dmg;
-    std::cout << _name << " 受到了 " << dmg << " 点伤害! ";
+    int finalDamage = dmg;
+    for (const auto& effect : _statusEffects) {
+        finalDamage = effect->modifyDamageTaken(finalDamage);
+    }
+
+    _hp -= finalDamage;
+    std::cout << _name << " 受到了 " << finalDamage << " 点伤害! ";
     if (_hp <= 0 ) {
         _hp = 0;
         std::cout << "它倒下了！";
@@ -20,13 +30,35 @@ bool Monster::isAlive () const {
     return _hp > 0;
 }
 
-std::string Monster::getName () const {
-    return _name;
+void Monster::applyStatusEffect (std::unique_ptr<StatusEffect> effect) {
+    _statusEffects.push_back(std::move(effect));
+}
+
+void Monster::reduceStatusEffectDuration () {
+    if (!_statusEffects.empty()) {
+        std::cout << ">> " << _name << " 的状态减少 1 回合" << std::endl;
+    }
+    for (auto& effect : _statusEffects) {
+        effect->reduceDuration();
+    }
+    for (auto effect = _statusEffects.begin(); effect != _statusEffects.end();) {
+        if ((*effect)->isExpired()) {
+            effect = _statusEffects.erase(effect);
+        } else {
+            effect++;
+        }
+    }
 }
 
 std::ostream& operator << (std::ostream& os, Monster& monster) {
     os << ">> " << monster._name << std::endl;
     os << "生命值：" << monster._hp << " / " << monster._maxHp << std::endl;
+    if (!monster._statusEffects.empty()) {
+        os << "状态效果: ";
+        for (const auto& effect : monster._statusEffects) {
+            os << effect->getStatusEffectName() << std::endl;
+        }
+    }
     return os;
 }
 

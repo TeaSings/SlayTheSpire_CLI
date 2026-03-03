@@ -4,6 +4,7 @@
 #include "Card.h"
 #include "Monster.h"
 #include "Player.h"
+#include "ConcreteStatusEffect.h"
 
 class StrikeCard :public Card {
 public:
@@ -55,6 +56,7 @@ public:
 
     virtual void play(Player& player, Monster& monster) override {
         monster.takeDamage(8);
+        monster.applyStatusEffect(std::make_unique<VulnerableEffect>(2));
     }
 
     virtual std::unique_ptr<Card> clone () const override {
