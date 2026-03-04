@@ -24,27 +24,8 @@ int main() {
     // 4. 模拟游戏主循环 (我们测试模拟 3 个回合)
     std::cout << "\n========== 战斗开始 ==========" << std::endl;
 
-    for (int turn = 1; turn <= 3; ++turn) {
-        std::cout << "\n>>> --- 第 " << turn << " 回合开始 --- <<<" << std::endl;
-        
-        // 阶段一：回合开始，玩家抽 5 张牌
-        ironclad.drawCard(5);
-        std::cout << ironclad << std::endl;
-        // 阶段二：玩家自动出牌
-        std::cout << "\n[玩家行动阶段]" << std::endl;
-        ironclad.playAllCards(jawWorm);
-        std::cout << jawWorm << std::endl;
-        // 阶段三：怪物行动
-        if (jawWorm.isAlive()) {
-            std::cout << "\n[怪物行动阶段]" << std::endl;
-            jawWorm.takeAction(ironclad);
-        } else {
-            std::cout << "\n怪物已死亡，战斗胜利！" << std::endl;
-            break;
-        }
-        std::cout << ironclad << std::endl;
-        // 阶段四：玩家回合结束，未打出的牌进入弃牌堆，清空护盾
-        ironclad.endTurn();
+    while (jawWorm.isAlive()) {
+        ironclad.takeTurn(jawWorm);
     }
 
     std::cout << "\n========== 战斗结束 ==========" << std::endl;

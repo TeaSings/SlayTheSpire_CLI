@@ -17,9 +17,10 @@ public:
     Player (const int hp = 0, const int mana = 0, const int shield = 0);
     ~Player ();
 
+    bool isAlive() const;
     void initDeck ();
     void drawCard (int count = 1);
-    void playAllCards (Monster& monster);
+    void takeTurn (Monster& monster);// 全新的开始回合函数，正式步入可交互的游戏
     void takeDamage (const int dmg);
     void getShield (const int shield);
     void resetShield ();

@@ -3,12 +3,17 @@
 #include <algorithm>
 #include <random>
 #include <chrono>
+#include <limits>
 
 Player::Player (const int hp, const int mana, const int shield)
     : _hp(hp), _mana(mana), _shield(shield)
     {}
 
 Player::~Player () {}
+
+bool Player::isAlive () const {
+    return _hp > 0;
+}
 
 void Player::initDeck () {
     for (int i = 0; i < 5; i++) _drawPile.push_back(CardLibrary::createCard("打击"));
@@ -54,21 +59,61 @@ void Player::endTurn () {
     resetShield();
     _mana = 3;
     std::cout << "--- 玩家回合结束 ---" << std::endl;
+    if (_discardPile.size() == 0) shuffle();
 }
 
-void Player::playAllCards (Monster& monster) {
-    for (size_t i = 0; i < _handCards.size(); ) {
-        if (_handCards[i]->getCost() <= _mana) {
-            _handCards[i]->play(*this, monster);
-            _mana -= _handCards[i]->getCost();
-            _discardPile.push_back(std::move(_handCards[i]));
-            _handCards.erase(_handCards.begin() + i);
-        } else {
+void Player::takeTurn (Monster& monster) {
+    std::cout << "输入 0 以结束当前回合" << std::endl;
+    drawCard(5);
+    while (1) {
+        if (!isAlive()) {
+            std::cout << "玩家已死亡" << std::endl;
+            break;
+        }
+
+        std::cout << *this;
+        std::cout << monster;
+        int choice = -1;
+        std::cin >> choice;
+
+        if (std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "输入无效, 请输入正确的数字" << std::endl;
+            continue;
+        }
+
+        if (choice == 0) break;
+
+        if (choice < 1 || choice > _handCards.size()) {
+            std::cout << "请输入有效的手牌编号 (1 - " << _handCards.size() << ")" << std::endl;
+            continue;
+        }
+
+        if (_handCards[choice - 1]->getCost() > _mana) {
             std::cout << "当前能量不足" << std::endl;
-            i++;
+            continue;
+        }
+
+        _handCards[choice - 1]->play(*this, monster);
+        _mana -= _handCards[choice - 1]->getCost();
+        _discardPile.push_back(std::move(_handCards[choice - 1]));
+        _handCards.erase(_handCards.begin() + choice - 1);
+
+        if (!monster.isAlive()) {
+            std::cout << "怪物已被击败！游戏结束" << std::endl;
+            break;
+        }
+
+        if (_handCards.empty()) {
+            std::cout << "手牌已打完, 回合结束" << std::endl;
+            break;
         }
     }
-    std::cout << "所有牌已出完" << std::endl;
+    if(monster.isAlive() && isAlive()) {
+            monster.takeAction(*this);
+    }
+    endTurn();
 }
 
 void Player::takeDamage (const int dmg) {
@@ -109,6 +154,7 @@ std::ostream& operator << (std::ostream& os, const Player& player) {
     os << ">> Player: " << std::endl;
     os << "生命值: " << player._hp << std::endl;
     os << "能量值: " << player._mana << std::endl;
+    os << "格挡值: " << player._shield << std::endl;
     os << "当前手牌: " << std::endl;
     if (player._handCards.empty()) {
         os << "(空)" << std::endl;
