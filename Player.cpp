@@ -59,7 +59,6 @@ void Player::endTurn () {
     resetShield();
     _mana = 3;
     std::cout << "--- 玩家回合结束 ---" << std::endl;
-    if (_discardPile.size() == 0) shuffle();
 }
 
 void Player::takeTurn (Monster& monster) {
@@ -74,9 +73,11 @@ void Player::takeTurn (Monster& monster) {
         std::cout << *this;
         std::cout << monster;
         int choice = -1;
-        std::cin >> choice;
-
-        if (std::cin.fail()) {
+        if (!(std::cin >> choice)) {
+            if (std::cin.eof()) {
+                std::cout << "检测到输入结束, 回合终止。" << std::endl;
+                break;
+            }
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "输入无效, 请输入正确的数字" << std::endl;

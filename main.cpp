@@ -3,7 +3,9 @@
 #include "ConcreteMonsters.h"
 
 int main() {
+    #ifdef _WIN32
     system("chcp 65001");
+    #endif
     
     // 1. 注册卡牌原型（只注册一次，后续都通过图鉴 clone）
     CardLibrary::registerCard("打击", std::make_unique<StrikeCard>(StrikeCard("打击", 1)));
@@ -13,7 +15,7 @@ int main() {
     MonsterLibrary::registerMonster("大颚虫", std::make_unique<JawWorm>(JawWorm("大颚虫", 40)));
     // 2. 创建玩家和怪物
     Player ironclad(70, 3, 0); 
-    std::unique_ptr<Monster> jawWormPtr = MonsterLibrary::createMonster("大颚虫");
+    auto jawWormPtr = MonsterLibrary::createMonster("大颚虫");
     Monster& jawWorm = *jawWormPtr;
 
     std::cout << ironclad << "\n" <<jawWorm << std::endl;
@@ -24,7 +26,7 @@ int main() {
     // 4. 模拟游戏主循环 (我们测试模拟 3 个回合)
     std::cout << "\n========== 战斗开始 ==========" << std::endl;
 
-    while (jawWorm.isAlive()) {
+    while (jawWorm.isAlive() && ironclad.isAlive()) {
         ironclad.takeTurn(jawWorm);
     }
 
