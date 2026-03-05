@@ -10,11 +10,19 @@
 
 class Player;
 
+enum MonsterIntentType {
+    Attack,
+    Defend  
+};
+
 class Monster {
 protected:
     std::string _name;
     int _hp;
     int _maxHp;
+    int _intentValue;
+    int _shield;
+    MonsterIntentType _intentType;
     std::vector<std::unique_ptr<StatusEffect>> _statusEffects;
 
     Monster (const Monster& other);
@@ -24,11 +32,16 @@ public:
     virtual ~Monster () {};
 
     void takeDamage (const int dmg);
+    void getShield (const int shield);
     bool isAlive () const;
     void applyStatusEffect (std::unique_ptr<StatusEffect> effect);
     void reduceStatusEffectDuration ();
+    int getIntentValue () const;
+    std::string getIntentText () const;
+    MonsterIntentType getIntentType () const;
     virtual void takeAction (Player& player) = 0;
     virtual std::unique_ptr<Monster> clone () const = 0;
+    virtual void rollIntent () = 0;
     friend std::ostream& operator << (std::ostream& os, Monster& monster);
 };
 

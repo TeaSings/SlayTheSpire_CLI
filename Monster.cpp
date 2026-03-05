@@ -4,11 +4,11 @@
 std::map<std::string, std::unique_ptr<Monster>> MonsterLibrary::monsterLibrary;
 
 Monster::Monster (const Monster& other)
-    : _name(other._name), _hp(other._hp), _maxHp(other._maxHp)
+    : _name(other._name), _hp(other._hp), _maxHp(other._maxHp), _intentValue(other._intentValue), _shield(other._shield), _intentType(other._intentType)
     {}
 
 Monster::Monster (const std::string& name, const int hp)
-    : _name(name), _hp(hp), _maxHp(hp)
+    : _name(name), _hp(hp), _maxHp(hp), _intentValue(0), _shield(0), _intentType(Attack)
     {}
 
 void Monster::takeDamage (const int dmg) {
@@ -17,13 +17,31 @@ void Monster::takeDamage (const int dmg) {
         finalDamage = effect->modifyDamageTaken(finalDamage);
     }
 
-    _hp -= finalDamage;
-    std::cout << _name << " 受到了 " << finalDamage << " 点伤害! ";
+    if (_shield > finalDamage) {
+        _shield -= finalDamage;
+        std::cout << _name << " 格挡了 " << finalDamage << " 点伤害" << std::endl;
+        finalDamage = 0;
+    } else {
+        if (_shield > 0) std::cout << _name << " 格挡了" << _shield << " 点伤害" << std::endl;
+        finalDamage -= _shield;
+        _shield = 0;
+    }
+
+    if (finalDamage > 0) {
+        std::cout << _name << " 承受了 " << finalDamage << " 点伤害" << std::endl;
+        _hp -= finalDamage;
+    }
+
     if (_hp <= 0 ) {
         _hp = 0;
         std::cout << "它倒下了！";
     }
-    std::cout << "剩余HP " << _hp << " / " << _maxHp << std::endl;
+    if (_hp > 0) std::cout << "剩余HP " << _hp << " / " << _maxHp << std::endl;
+}
+
+void Monster::getShield (const int shield) {
+    _shield += shield;
+    std::cout << _name << " 获得了 " << shield << " 点格挡" << std::endl;
 }
 
 bool Monster::isAlive () const {
@@ -50,9 +68,25 @@ void Monster::reduceStatusEffectDuration () {
     }
 }
 
+int Monster::getIntentValue () const {
+    return _intentValue;
+}
+
+std::string Monster::getIntentText () const {
+    if (_intentType == Attack) return "攻击 " + std::to_string(_intentValue);
+    else if (_intentType == Defend) return "防御 " + std::to_string(_intentValue);
+    return "[Warning]: 未知意图";
+}
+
+MonsterIntentType Monster::getIntentType () const {
+    return _intentType;
+}
+
 std::ostream& operator << (std::ostream& os, Monster& monster) {
     os << ">> " << monster._name << std::endl;
-    os << "生命值：" << monster._hp << " / " << monster._maxHp << std::endl;
+    os << "生命值: " << monster._hp << " / " << monster._maxHp << std::endl;
+    os << "格挡值: " << monster._shield << std::endl;
+    os << "当前意图: " << monster.getIntentText() << std::endl;
     if (!monster._statusEffects.empty()) {
         os << "状态效果: ";
         for (const auto& effect : monster._statusEffects) {

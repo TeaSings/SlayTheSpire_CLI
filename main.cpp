@@ -1,12 +1,15 @@
 #include "ConcreteCards.h"
 #include "Player.h"
 #include "ConcreteMonsters.h"
+#include <ctime>
+#include <cstdlib>
 
 int main() {
     #ifdef _WIN32
     system("chcp 65001");
     #endif
     
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
     // 1. 注册卡牌原型（只注册一次，后续都通过图鉴 clone）
     CardLibrary::registerCard("打击", std::make_unique<StrikeCard>(StrikeCard("打击", 1)));
     CardLibrary::registerCard("防御", std::make_unique<DefendCard>(DefendCard("防御", 1)));
@@ -17,8 +20,7 @@ int main() {
     Player ironclad(70, 3, 0); 
     auto jawWormPtr = MonsterLibrary::createMonster("大颚虫");
     Monster& jawWorm = *jawWormPtr;
-
-    std::cout << ironclad << "\n" <<jawWorm << std::endl;
+    jawWorm.rollIntent();
     // 3. 初始化卡组 (会自动生成 5打击 4防御 1痛击 并进行首次洗牌)
     std::cout << "========== 游戏初始化 ==========" << std::endl;
     ironclad.initDeck();

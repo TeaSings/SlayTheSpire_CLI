@@ -3,6 +3,7 @@
 
 #include "Monster.h"
 #include "Player.h"
+#include <cstdlib>
 
 class JawWorm :public Monster {
 public:
@@ -15,9 +16,26 @@ public:
     }
 
     virtual void takeAction (Player& player) override {
-        std::cout << ">> " << _name << " 发起了撕咬！" << std::endl;
-        player.takeDamage(11);
+        if (_intentType == Attack) {
+            std::cout << ">> " << _name << " 发起了撕咬" << std::endl;
+            player.takeDamage(_intentValue);
+        } else if (_intentType == Defend) {
+            std::cout << ">> " << _name << " 进行了格挡" << std::endl;
+            getShield(_intentValue);
+        }
         reduceStatusEffectDuration();
+        rollIntent();
+    }
+
+    virtual void rollIntent () override {
+        int random = std::rand() % 2;
+        if (random == 0) {
+            _intentType = Attack;
+            _intentValue = 11;
+        } else {
+            _intentType = Defend;
+            _intentValue = 6;
+        }
     }
 };
 
