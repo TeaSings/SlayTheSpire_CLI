@@ -1,6 +1,7 @@
 #include "ConcreteCards.h"
 #include "Player.h"
 #include "ConcreteMonsters.h"
+#include "BattleEngine.h"
 #include <ctime>
 #include <cstdlib>
 
@@ -24,6 +25,7 @@ int main() {
     // 3. 初始化卡组 (会自动生成 5打击 4防御 1痛击 并进行首次洗牌)
     std::cout << "========== 游戏初始化 ==========" << std::endl;
     ironclad.initDeck();
+    BattleEngine battleEngine;
 
     // 4. 模拟游戏主循环 (我们测试模拟 3 个回合)
     std::cout << "\n========== 战斗开始 ==========" << std::endl;
